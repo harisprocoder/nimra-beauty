@@ -14,7 +14,7 @@ const SPARKLES = [
 const LOCAL_PILLS = [
   "Women's Beauty Salon",
   "Gulzar-e-Hijri · Scheme 33",
-  "University Road · Safora Chowk",
+  "W5Q5+V8 · Karachi",
 ];
 
 /* Deterministic, subtle floating particles for the hero background */

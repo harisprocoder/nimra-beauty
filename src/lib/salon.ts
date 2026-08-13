@@ -22,9 +22,8 @@ export const SALON = {
   phoneDisplay: "0310 0707222",
   phoneTel: "+923100707222",
   whatsappNumber: "923100707222",
-  address:
-    "R4 Prem Villas, University Road, Safora Chowk, Gulzar-e-Hijri, Scheme 33, Karachi, Pakistan",
-  addressShort: "University Road, Safora Chowk, Karachi",
+  address: "W5Q5+V8, Gulzar-e-Hijri, Scheme 33, Karachi, Pakistan",
+  addressShort: "W5Q5+V8, Gulzar-e-Hijri, Scheme 33, Karachi",
   rating: 4,
   reviewCount: 226,
   mapsUrl:
