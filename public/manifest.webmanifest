@@ -1,0 +1,17 @@
+{
+  "name": "Nimra Khan Salon — Premium Beauty Salon in Karachi",
+  "short_name": "Nimra Khan Salon",
+  "description": "Karachi's premium women's beauty salon — bridal makeup, hair, skin & more. Call 0310 0707222.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdf9f4",
+  "theme_color": "#b76e79",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
