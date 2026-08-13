@@ -41,14 +41,14 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="Nimra Khan Salon on Instagram (coming soon)"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/20 bg-white/10 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:border-gold hover:bg-gold hover:text-[#432a34]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/20 bg-white/10 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 hover:border-gold hover:bg-gold hover:text-[#432a34]"
               >
                 <Instagram className="h-4 w-4" />
               </a>
               <a
                 href="#"
                 aria-label="Nimra Khan Salon on Facebook (coming soon)"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/20 bg-white/10 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:border-gold hover:bg-gold hover:text-[#432a34]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/20 bg-white/10 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 hover:border-gold hover:bg-gold hover:text-[#432a34]"
               >
                 <Facebook className="h-4 w-4" />
               </a>
@@ -57,7 +57,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat with Nimra Khan Salon on WhatsApp"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/20 bg-white/10 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:border-[#25D366] hover:bg-[#25D366]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/20 bg-white/10 text-ivory transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 hover:border-[#25D366] hover:bg-[#25D366]"
               >
                 <WhatsAppIcon className="h-4 w-4" />
               </a>
@@ -101,7 +101,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-4 text-sm text-blush/85">
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <a href={`tel:${SALON.phoneTel}`} className="font-bold text-ivory transition-colors hover:text-gold-soft">
+                <a href={`tel:${SALON.phoneTel}`} className="shake-hover font-bold text-ivory transition-colors duration-300 hover:text-gold-soft">
                   {SALON.phoneDisplay}
                 </a>
               </li>

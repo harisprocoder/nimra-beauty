@@ -1,33 +1,61 @@
-import { motion } from "framer-motion";
 import { Sparkle, Star } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** Signature easing used across the site for soft, luxurious motion. */
-export const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+/** Observe when an element scrolls into view (fires once). */
+export function useInView<T extends HTMLElement>(threshold = 0.12) {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
 
-/** Fade-in + slide-up reveal when a section scrolls into view. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setInView(true);
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold, rootMargin: "0px 0px -60px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, inView };
+}
+
+/**
+ * Fade-in + slide-up reveal when a section scrolls into view.
+ * Pure CSS transitions; `.is-visible` is toggled by an IntersectionObserver.
+ * `delay` staggers elements (used by the services grid).
+ */
 export function Reveal({
   children,
   className,
   delay = 0,
-  y = 26,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
-  y?: number;
 }) {
+  const { ref, inView } = useInView<HTMLDivElement>();
   return (
-    <motion.div
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-70px" }}
-      transition={{ duration: 0.75, delay, ease: EASE }}
-      className={className}
+    <div
+      ref={ref}
+      className={cn("reveal", inView && "is-visible", className)}
+      style={{ transitionDelay: `${delay}s` }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -92,7 +120,7 @@ export function SectionHeader({
   );
 }
 
-/** Gold star row (e.g. ★★★★☆ for the 4.0 rating). */
+/** Gold star row (e.g. ★★★★☆ for the 4.0 rating) with one-by-one twinkle. */
 export function Stars({
   value = 4,
   size = 16,
@@ -104,7 +132,7 @@ export function Stars({
 }) {
   return (
     <span
-      className={cn("inline-flex items-center gap-0.5", className)}
+      className={cn("stars-twinkle inline-flex items-center gap-0.5", className)}
       aria-label={`${value} out of 5 stars`}
     >
       {[0, 1, 2, 3, 4].map((i) => (
@@ -112,7 +140,7 @@ export function Stars({
           key={i}
           className={cn(
             "text-gold",
-            i < value ? "fill-gold" : "opacity-30",
+            i < value ? "star-filled fill-gold" : "opacity-30",
           )}
           style={{ width: size, height: size }}
         />
@@ -136,6 +164,50 @@ export function Curve({ className, flip = false }: { className?: string; flip?: 
         />
       </svg>
     </div>
+  );
+}
+
+/**
+ * Counts up from 0 when it scrolls into view (e.g. "0" → "226+").
+ * Vanilla JS: IntersectionObserver + requestAnimationFrame, 0.8s ease-out.
+ */
+export function CountUp({ value, className }: { value: string; className?: string }) {
+  const { ref, inView } = useInView<HTMLSpanElement>(0.3);
+  const [display, setDisplay] = useState(() => {
+    const match = value.match(/^([\d.]+)(.*)$/);
+    if (!match) return value;
+    const decimals = match[1].includes(".") ? 1 : 0;
+    return `${(0).toFixed(decimals)}${match[2]}`;
+  });
+
+  useEffect(() => {
+    if (!inView) return;
+    const match = value.match(/^([\d.]+)(.*)$/);
+    if (!match) {
+      setDisplay(value);
+      return;
+    }
+    const target = parseFloat(match[1]);
+    const suffix = match[2];
+    const decimals = match[1].includes(".") ? 1 : 0;
+    const duration = 800;
+
+    let raf = 0;
+    const start = performance.now();
+    const step = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setDisplay(`${(target * eased).toFixed(decimals)}${suffix}`);
+      if (progress < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, value]);
+
+  return (
+    <span ref={ref} className={className}>
+      {display}
+    </span>
   );
 }
 

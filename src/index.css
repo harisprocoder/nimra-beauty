@@ -181,8 +181,12 @@ html {
     transparent 58%
   );
   transform: translateX(-160%) skewX(-18deg);
-  animation: shimmer-sweep 3.4s ease-in-out infinite;
   pointer-events: none;
+}
+/* Rose-gold shimmer sweeps softly on hover / keyboard focus (0.8s ease-in-out) */
+.btn-shimmer:hover::after,
+.btn-shimmer:focus-visible::after {
+  animation: shimmer-sweep 0.8s ease-in-out 1;
 }
 
 /* Gentle float for decorative elements */
@@ -280,4 +284,241 @@ html {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* ============================================================
+   Elegant motion system — pure CSS + IntersectionObserver driven.
+   Entrance animations run 0.3s–0.8s with ease-in-out (ambient
+   loops like pulses/particles are excluded).
+   ============================================================ */
+
+/* 1. Page load: whole page fades in, logo scales in */
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.page-fade {
+  animation: page-fade-in 0.7s ease-in-out both;
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.logo-scale-in {
+  animation: scale-in 0.6s ease-in-out both;
+}
+
+/* Generic fade-up — hero entrances set an inline animation-delay */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.7s ease-in-out both;
+}
+
+/* Scroll reveal — .is-visible is added by the IntersectionObserver hook */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 3. Typewriter cursor */
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 4px;
+  vertical-align: -0.12em;
+  border-radius: 9999px;
+  background: #b76e79;
+  animation: cursor-blink 0.9s ease-in-out infinite;
+}
+
+/* 2. Nav link underline slide */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 2px;
+  width: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #b76e79, #c9a24b);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease-in-out;
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* 6. Stars twinkle one by one */
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+.stars-twinkle svg.star-filled {
+  animation: star-twinkle 1.8s ease-in-out infinite;
+}
+.stars-twinkle svg.star-filled:nth-child(1) {
+  animation-delay: 0s;
+}
+.stars-twinkle svg.star-filled:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.stars-twinkle svg.star-filled:nth-child(3) {
+  animation-delay: 0.36s;
+}
+.stars-twinkle svg.star-filled:nth-child(4) {
+  animation-delay: 0.54s;
+}
+.stars-twinkle svg.star-filled:nth-child(5) {
+  animation-delay: 0.72s;
+}
+
+/* 7. Form fields glow softly on focus */
+.glow-focus {
+  transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+.glow-focus:focus {
+  border-color: #b76e79;
+  box-shadow:
+    0 0 0 4px rgba(183, 110, 121, 0.14),
+    0 10px 28px rgba(183, 110, 121, 0.16);
+}
+
+/* 7. Phone number shakes gently on hover */
+@keyframes shake-soft {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  40% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-1.5px);
+  }
+  80% {
+    transform: translateX(1.5px);
+  }
+}
+.shake-hover {
+  display: inline-block;
+}
+.shake-hover:hover {
+  animation: shake-soft 0.45s ease-in-out;
+}
+
+/* 8. Call float button ring (WhatsApp pulse already exists as .pulse-ring) */
+.ring-pulse {
+  position: relative;
+}
+.ring-pulse::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(183, 110, 121, 0.45);
+  z-index: -1;
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+
+/* 3. Hero floating particles */
+@keyframes particle-rise {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.45;
+  }
+  80% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translateY(-85vh) translateX(14px);
+    opacity: 0;
+  }
+}
+.hero-particle {
+  position: absolute;
+  bottom: -4%;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(201, 162, 75, 0.7) 0%,
+    rgba(183, 110, 121, 0.35) 60%,
+    transparent 72%
+  );
+  pointer-events: none;
+  animation: particle-rise linear infinite;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .page-fade,
+  .logo-scale-in,
+  .animate-fade-up,
+  .reveal,
+  .stars-twinkle svg.star-filled,
+  .hero-particle,
+  .typewriter-cursor,
+  .shake-hover:hover,
+  .ring-pulse::before,
+  .pulse-ring::before {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal,
+  .animate-fade-up {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

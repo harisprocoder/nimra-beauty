@@ -9,7 +9,7 @@ export default function FloatingActions() {
       <a
         href={`tel:${SALON.phoneTel}`}
         aria-label={`Call Nimra Khan Salon at ${SALON.phoneDisplay}`}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-rosegold to-rosegold-dark text-white shadow-xl shadow-rosegold/40 transition-transform duration-300 hover:scale-110"
+        className="ring-pulse flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-rosegold to-rosegold-dark text-white shadow-xl shadow-rosegold/40 transition-transform duration-300 hover:scale-110"
       >
         <Phone className="h-5 w-5" />
       </a>

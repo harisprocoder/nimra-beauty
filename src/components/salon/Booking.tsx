@@ -15,7 +15,7 @@ const SPARKLES = [
 ];
 
 const inputClass =
-  "h-11 rounded-lg border-rosegold/25 bg-white/80 text-berry placeholder:text-mauve/70 focus-visible:ring-rosegold/40";
+  "glow-focus h-11 rounded-lg border-rosegold/25 bg-white/80 text-berry placeholder:text-mauve/70 focus-visible:ring-rosegold/40";
 
 export default function Booking() {
   const [sent, setSent] = useState(false);
@@ -92,7 +92,7 @@ export default function Booking() {
                 </span>
                 <span>
                   <span className="block font-serif text-lg text-ivory">Call us — the fastest way</span>
-                  <span className="mt-1 block text-lg font-extrabold text-gold-soft group-hover:underline">
+                  <span className="shake-hover mt-1 block text-lg font-extrabold text-gold-soft group-hover:underline">
                     {SALON.phoneDisplay}
                   </span>
                   <span className="mt-1 block text-sm leading-relaxed text-blush/80">
@@ -189,7 +189,7 @@ export default function Booking() {
                     name="service"
                     required
                     defaultValue=""
-                    className="h-11 w-full rounded-lg border border-rosegold/25 bg-white/80 px-3 text-sm text-berry outline-none transition focus:border-rosegold focus:ring-2 focus:ring-rosegold/40"
+                    className="glow-focus h-11 w-full rounded-lg border border-rosegold/25 bg-white/80 px-3 text-sm text-berry outline-none transition focus:border-rosegold focus:ring-2 focus:ring-rosegold/40"
                   >
                     <option value="" disabled>
                       Select a service…
@@ -229,7 +229,7 @@ export default function Booking() {
                     name="message"
                     rows={3}
                     placeholder="Tell us about the look you have in mind…"
-                    className="rounded-lg border-rosegold/25 bg-white/80 text-berry placeholder:text-mauve/70 focus-visible:ring-rosegold/40"
+                    className="glow-focus rounded-lg border-rosegold/25 bg-white/80 text-berry placeholder:text-mauve/70 focus-visible:ring-rosegold/40"
                   />
                 </div>
               </div>

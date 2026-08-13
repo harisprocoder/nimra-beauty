@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
 import { ChevronDown, MapPin, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
 import { SALON, WA_DEFAULT, waLink } from "@/lib/salon";
-import { Curve, EASE, Stars } from "@/components/salon/shared";
+import { Curve, Stars } from "@/components/salon/shared";
 
 const SPARKLES = [
   { top: "16%", left: "10%", size: 14, delay: "0s" },
@@ -17,7 +17,61 @@ const LOCAL_PILLS = [
   "University Road · Safora Chowk",
 ];
 
+/* Deterministic, subtle floating particles for the hero background */
+const HERO_PARTICLES = Array.from({ length: 12 }, (_, i) => ({
+  left: (i * 8.3 + 3) % 97,
+  size: 3 + ((i * 7) % 4) * 2,
+  duration: 11 + ((i * 5) % 7),
+  delay: -((i * 3.7) % 11),
+}));
+
+/** Vanilla-JS typewriter for the hero heading ("Nimra Khan" → "Salon"). */
+function useTypewriter(words: readonly string[], typeSpeed = 60, startDelay = 450) {
+  const [parts, setParts] = useState<string[]>(() => words.map(() => ""));
+  const [active, setActive] = useState(0);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let word = 0;
+    let char = 0;
+    let timer: number | undefined;
+
+    const tick = () => {
+      if (word >= words.length) {
+        setDone(true);
+        return;
+      }
+      char += 1;
+      setParts(
+        words.map((w, i) => (i < word ? w : i === word ? w.slice(0, char) : "")),
+      );
+      if (char >= words[word].length) {
+        word += 1;
+        char = 0;
+        setActive(word);
+        if (word >= words.length) {
+          setDone(true);
+          return;
+        }
+        timer = window.setTimeout(tick, 340); // short pause between lines
+      } else {
+        timer = window.setTimeout(tick, typeSpeed);
+      }
+    };
+
+    timer = window.setTimeout(tick, startDelay);
+    return () => {
+      if (timer) window.clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return { parts, active, done };
+}
+
 export default function Hero() {
+  const { parts, active, done } = useTypewriter(["Nimra Khan", "Salon"]);
+
   return (
     <section
       id="home"
@@ -50,34 +104,52 @@ export default function Hero() {
         </span>
       ))}
 
+      {/* Subtle floating particles */}
+      {HERO_PARTICLES.map((p, i) => (
+        <span
+          key={i}
+          aria-hidden="true"
+          className="hero-particle"
+          style={{
+            left: `${p.left}%`,
+            width: p.size,
+            height: p.size,
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+
       <div className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-16 px-5 pb-36 pt-32 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:pb-44 lg:pt-36">
         {/* ------- Text column: identity, trust, action ------- */}
         <div className="text-center lg:text-left">
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
-            className="font-script text-3xl text-rosegold sm:text-4xl"
+          <p
+            className="animate-fade-up font-script text-3xl text-rosegold sm:text-4xl"
+            style={{ animationDelay: "0.15s" }}
           >
             {SALON.tagline}
-          </motion.p>
+          </p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.25, ease: EASE }}
-            className="mt-4 font-serif text-5xl leading-[1.04] text-berry sm:text-6xl lg:text-7xl"
-          >
-            Nimra Khan
-            <span className="gold-text mt-1 block italic">Salon</span>
-          </motion.h1>
+          {/* Typewriter heading */}
+          <h1 className="mt-4 font-serif text-5xl leading-[1.04] text-berry sm:text-6xl lg:text-7xl">
+            <span className="block">
+              {parts[0]}
+              {active === 0 && !done && (
+                <span className="typewriter-cursor" aria-hidden="true" />
+              )}
+            </span>
+            <span className="gold-text mt-1 block italic">
+              {parts[1]}
+              {active === 1 && !done && (
+                <span className="typewriter-cursor" aria-hidden="true" />
+              )}
+            </span>
+          </h1>
 
           {/* Social proof — the 4.0 / 226-reviews badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.42, ease: EASE }}
-            className="mt-7 inline-flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 rounded-full border border-gold/35 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur lg:justify-start"
+          <div
+            className="animate-fade-up mt-7 inline-flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 rounded-full border border-gold/35 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur lg:justify-start"
+            style={{ animationDelay: "0.42s" }}
           >
             <Stars value={SALON.rating} size={16} />
             <span className="text-[15px] font-extrabold text-berry">{SALON.rating}.0</span>
@@ -85,25 +157,21 @@ export default function Hero() {
             <span className="text-[15px] font-bold text-berry-soft">
               {SALON.reviewCount} reviews
             </span>
-          </motion.div>
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.55, ease: EASE }}
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-berry-soft sm:text-lg lg:mx-0"
+          <p
+            className="animate-fade-up mx-auto mt-6 max-w-xl text-base leading-relaxed text-berry-soft sm:text-lg lg:mx-0"
+            style={{ animationDelay: "0.55s" }}
           >
             Karachi&apos;s premium beauty destination — expert stylists, luxurious
             treatments, and a warm, women-only space designed around you. Look
             stunning. Feel confident.
-          </motion.p>
+          </p>
 
           {/* Primary calls to action */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.68, ease: EASE }}
-            className="mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+          <div
+            className="animate-fade-up mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+            style={{ animationDelay: "0.68s" }}
           >
             <a
               href="#book"
@@ -125,13 +193,11 @@ export default function Hero() {
             >
               <MapPin className="h-4 w-4" /> Get Directions
             </a>
-          </motion.div>
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.85 }}
-            className="mt-5 text-sm text-mauve"
+          <p
+            className="animate-fade-up mt-5 text-sm text-mauve"
+            style={{ animationDelay: "0.85s" }}
           >
             Prefer WhatsApp?{" "}
             <a
@@ -142,14 +208,12 @@ export default function Hero() {
             >
               We usually reply within minutes.
             </a>
-          </motion.p>
+          </p>
 
           {/* Local trust pills */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-2 lg:justify-start"
+          <div
+            className="animate-fade-up mt-8 flex flex-wrap items-center justify-center gap-2 lg:justify-start"
+            style={{ animationDelay: "1s" }}
           >
             {LOCAL_PILLS.map((pill) => (
               <span
@@ -159,15 +223,13 @@ export default function Hero() {
                 {pill}
               </span>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* ------- Visual column: elegant medallion ------- */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.1, delay: 0.35, ease: EASE }}
-          className="relative mx-auto flex h-[400px] w-[340px] items-center justify-center sm:h-[500px] sm:w-[440px]"
+        <div
+          className="animate-scale-in relative mx-auto flex h-[400px] w-[340px] items-center justify-center sm:h-[500px] sm:w-[440px]"
+          style={{ animationDelay: "0.35s" }}
         >
           <div
             className="absolute inset-4 rounded-full bg-[radial-gradient(circle_at_center,rgba(227,183,190,0.55),transparent_66%)] blur-2xl"
@@ -205,47 +267,41 @@ export default function Hero() {
           </div>
 
           {/* Floating chips */}
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.1, ease: EASE }}
-            className="animate-float-soft absolute -left-1 top-6 sm:left-0"
+          <div
+            className="animate-fade-up absolute -left-1 top-6 sm:left-0"
+            style={{ animationDelay: "1.1s" }}
           >
-            <div className="flex items-center gap-2 rounded-full border border-rosegold/20 bg-white/90 px-4 py-2 shadow-lg shadow-rosegold/10 backdrop-blur">
+            <div className="animate-float-soft flex items-center gap-2 rounded-full border border-rosegold/20 bg-white/90 px-4 py-2 shadow-lg shadow-rosegold/10 backdrop-blur">
               <Stars value={4} size={13} />
               <span className="text-xs font-extrabold text-berry">4.0</span>
               <span className="text-xs text-mauve">· {SALON.reviewCount} reviews</span>
             </div>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.25, ease: EASE }}
-            className="animate-float-soft-slow absolute -right-1 bottom-20 sm:right-0"
+          </div>
+          <div
+            className="animate-fade-up absolute -right-1 bottom-20 sm:right-0"
+            style={{ animationDelay: "1.25s" }}
           >
-            <div className="rounded-2xl border border-gold/25 bg-white/90 px-4 py-3 shadow-lg shadow-rosegold/10 backdrop-blur">
+            <div className="animate-float-soft-slow rounded-2xl border border-gold/25 bg-white/90 px-4 py-3 shadow-lg shadow-rosegold/10 backdrop-blur">
               <p className="font-script text-xl leading-none text-rosegold">
                 Bridal · Hair · Skin
               </p>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       {/* Scroll cue */}
-      <motion.a
+      <a
         href="#about"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
         aria-label="Scroll to the About section"
-        className="absolute bottom-24 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-rosegold lg:flex"
+        className="animate-fade-up absolute bottom-24 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-rosegold lg:flex"
+        style={{ animationDelay: "1.5s" }}
       >
         <span className="text-[10px] font-extrabold uppercase tracking-[0.3em]">
           Discover
         </span>
         <ChevronDown className="h-5 w-5 animate-bounce" />
-      </motion.a>
+      </a>
 
       {/* Soft curve into the About section */}
       <Curve className="absolute bottom-0 left-0 right-0 text-white" />

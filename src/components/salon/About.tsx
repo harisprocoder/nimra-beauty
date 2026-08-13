@@ -1,5 +1,5 @@
 import { Check, MapPin } from "lucide-react";
-import { Reveal, SectionHeader, Stars } from "@/components/salon/shared";
+import { CountUp, Reveal, SectionHeader, Stars } from "@/components/salon/shared";
 import { SALON } from "@/lib/salon";
 
 const HIGHLIGHTS = [
@@ -82,7 +82,7 @@ export default function About() {
               <Reveal key={stat.label} delay={i * 0.09} className="h-full">
                 <div className="flex h-full flex-col items-center justify-center gap-1.5 rounded-3xl border border-rosegold/15 bg-gradient-to-br from-white to-blush/50 p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-rosegold/15">
                   <span className="font-serif text-4xl font-bold text-berry sm:text-[2.75rem]">
-                    {stat.value}
+                    <CountUp value={stat.value} />
                   </span>
                   {stat.stars ? (
                     <Stars value={SALON.rating} size={14} />
